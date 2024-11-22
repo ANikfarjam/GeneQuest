@@ -1,0 +1,10 @@
+.gear-icon {
+    color: #555;
+    transition: transform 0.2s;
+  }
+  
+  .gear-icon:hover {
+    transform: rotate(20deg);
+    color: #000;
+  }
+  

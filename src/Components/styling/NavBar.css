@@ -1,0 +1,73 @@
+/* Navbar Styling */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #005f73;
+  color: white;
+  width: 100%;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo-image {
+  width: 40px; /* Adjust the size as needed */
+  height: 40px;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+
+.nimbus-link h3 {
+  margin: 0;
+  font-size: 1.5em;
+  color: #fff;
+  text-decoration: none;
+}
+
+.navbar-center .navbar-options {
+  display: flex;
+  gap: 20px;
+}
+
+.navbar-center .navbar-options a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.navbar-center .navbar-options a:hover {
+  color: #94d2bd;
+}
+
+/* Additional styling for app layout */
+.App {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  margin-top: 20px;
+}
+
+.App input[type="text"] {
+  padding: 8px;
+  margin-top: 10px;
+  font-size: 1em;
+}
+
+.App button {
+  padding: 8px 15px;
+  font-size: 1em;
+  color: white;
+  background-color: #005f73;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.App button:hover {
+  background-color: #0a9396;
+}

@@ -1,0 +1,97 @@
+/* DataTable.css */
+
+/* Container for the entire table */
+.datatable-container {
+    width: 100%;
+    overflow-x: auto;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  /* Table styling */
+  .datatable {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    text-align: left;
+  }
+  
+  /* Header styling */
+  .datatable thead {
+    background-color: #f4f4f4;
+  }
+  
+  .datatable thead th {
+    padding: 12px;
+    border-bottom: 2px solid #ddd;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Row styling */
+  .datatable tbody tr {
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease;
+  }
+  
+  .datatable tbody tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .datatable tbody tr.selected {
+    background-color: #e0f7fa;
+  }
+  
+  /* Cell styling */
+  .datatable td,
+  .datatable th {
+    padding: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Checkbox column */
+  .datatable td:first-child,
+  .datatable th:first-child {
+    text-align: center;
+    width: 50px;
+  }
+  
+  /* Ellipsis for long text */
+  .datatable-ellipsis {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* No results message */
+  .datatable-no-results {
+    font-size: 16px;
+    color: #666;
+    text-align: center;
+    margin: 20px;
+  }
+  
+  /* Responsive styling */
+  @media (max-width: 768px) {
+    .datatable-container {
+      border: none;
+      box-shadow: none;
+    }
+  
+    .datatable th,
+    .datatable td {
+      padding: 8px;
+    }
+  
+    .datatable-ellipsis {
+      max-width: 100px;
+    }
+  }
+  
