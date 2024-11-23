@@ -3,7 +3,8 @@ import './Components/styling/App.css';
 import Navbar from './Components/Nav_Bar';
 import GenomeSearch from './Components/NCBI';
 import GenBankSearch from './Components/GenBankSearch';
-//import PhylogeneticTree from './Components/PhylogeneticTree'; // Import the new component
+import PhylogeneticTree from './Components/PhylogeneticTree';
+import MegaBLAST from './Components/MegaBlast';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import logo from './Components/media/logo.jpg';
 
@@ -23,6 +24,8 @@ function App() {
           } />
           <Route path="/GenBank" element={<GenBankSearch />} />
           <Route path="/Blast" element={<GenomeSearch />} />
+          <Route path="/PhylogeneticTree" element={<PhylogeneticTree />} />
+          <Route path="/MegaBLAST" element={<MegaBLAST />} />
           <Route path="/about" element={<p>About Us section content here.</p>} />
         </Routes>
       </div>
