@@ -35,6 +35,8 @@ cache = load_cache()
 @megablast_bp.route('/api/megablast', methods=['POST'])
 def megablast():
     try:
+        sequence = None
+
         # Check for uploaded file
         if 'file' in request.files:
             fasta_file = request.files['file']
@@ -48,11 +50,17 @@ def megablast():
             with open(temp_fasta.name, "r") as file:
                 record = next(SeqIO.parse(file, "fasta"))
                 sequence = str(record.seq)
+        
+        # Check for sequence in FormData if not from a file
+        elif 'sequence' in request.form:
+            sequence = request.form['sequence']
+        
+        # Check for JSON payload if neither file nor form sequence is provided
         else:
-            # Get the sequence from JSON payload
             data = request.get_json()
-            sequence = data.get("sequence", None)
+            sequence = data.get("sequence", None) if data else None
 
+        # Return an error if no valid sequence is provided
         if not sequence:
             return jsonify({"error": "No sequence or file provided"}), 400
 
