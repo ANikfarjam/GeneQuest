@@ -4,27 +4,38 @@ import "./DataTable";
 
 const MegaBLAST = () => {
   const [sequence, setSequence] = useState("");
+  const [file, setFile] = useState(null); // State to store uploaded file
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Initial column widths
-  const [columnWidths] = useState({
-    title: "50%", // Wider Title column
-    length: "12.5%",
-    score: "12.5%",
-    eValue: "12.5%",
-    identity: "12.5%",
-  });
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+    setSequence(""); // Clear the sequence input if a file is selected
+  };
 
   const handleMegaBLAST = async () => {
     setLoading(true);
     setError(null);
     setResults([]);
 
+    const formData = new FormData();
+
+    if (file) {
+      formData.append("file", file); // Add file to form data
+    } else if (sequence.trim()) {
+      formData.append("sequence", sequence.trim()); // Add sequence to form data
+    } else {
+      setError("Please provide a sequence or upload a FASTA file.");
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.post("http://127.0.0.1:5000/api/megablast", {
-        sequence: sequence.trim(),
+      const response = await axios.post("http://127.0.0.1:5000/api/megablast", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       setResults(response.data.megablast_results);
     } catch (err) {
@@ -38,28 +49,53 @@ const MegaBLAST = () => {
   return (
     <div>
       <h2>MegaBLAST Tool</h2>
+
+      {/* Sequence Textarea */}
       <textarea
         rows="5"
         placeholder="Enter your sequence here"
         value={sequence}
         onChange={(e) => setSequence(e.target.value)}
+        disabled={!!file} // Disable if a file is uploaded
       />
       <br />
+
+      {/* Hidden File Input */}
+      <input
+        id="fileInput"
+        type="file"
+        accept=".fasta"
+        onChange={handleFileChange}
+        style={{ display: "none" }} // Hide the default file input
+      />
+
+      {/* Custom File Button */}
+      <button
+        onClick={() => document.getElementById("fileInput").click()} // Trigger the file input click
+      >
+        {file ? file.name : "Choose File"}
+      </button>
+      <br />
+
       <button onClick={handleMegaBLAST}>Run MegaBLAST</button>
 
+      {/* Loading Message */}
       {loading && <p style={{ color: "blue", marginTop: "10px" }}>Running MegaBLAST. Please wait...</p>}
+
+      {/* Error Message */}
       {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
 
+      {/* Results Table */}
       {results.length > 0 && (
         <div className="datatable-container">
           <table className="datatable">
             <thead>
               <tr>
-                <th style={{ width: columnWidths.title }}>Title</th>
-                <th style={{ width: columnWidths.length }}>Length</th>
-                <th style={{ width: columnWidths.score }}>Score</th>
-                <th style={{ width: columnWidths.eValue }}>E-Value</th>
-                <th style={{ width: columnWidths.identity }}>Identity</th>
+                <th>Title</th>
+                <th>Length</th>
+                <th>Score</th>
+                <th>E-Value</th>
+                <th>Identity</th>
               </tr>
             </thead>
             <tbody>
@@ -81,3 +117,4 @@ const MegaBLAST = () => {
 };
 
 export default MegaBLAST;
+

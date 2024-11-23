@@ -1,9 +1,12 @@
 from flask import Blueprint, request, jsonify
 from Bio.Blast import NCBIWWW, NCBIXML
+from Bio import SeqIO
 import os
 import json
 import hashlib
+from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
+import tempfile
 
 # Blueprint setup
 megablast_bp = Blueprint("megablast", __name__)
@@ -29,16 +32,29 @@ def save_cache(cache_data):
 # Initialize the cache (loaded once when the server starts)
 cache = load_cache()
 
-
 @megablast_bp.route('/api/megablast', methods=['POST'])
 def megablast():
     try:
-        # Get the sequence from the request
-        data = request.get_json()
-        sequence = data.get("sequence", None)
+        # Check for uploaded file
+        if 'file' in request.files:
+            fasta_file = request.files['file']
+            filename = secure_filename(fasta_file.filename)
+
+            # Save file temporarily and parse the sequence
+            temp_fasta = tempfile.NamedTemporaryFile(delete=False)
+            fasta_file.save(temp_fasta.name)
+            
+            # Extract the first sequence from the FASTA file
+            with open(temp_fasta.name, "r") as file:
+                record = next(SeqIO.parse(file, "fasta"))
+                sequence = str(record.seq)
+        else:
+            # Get the sequence from JSON payload
+            data = request.get_json()
+            sequence = data.get("sequence", None)
 
         if not sequence:
-            return jsonify({"error": "No sequence provided"}), 400
+            return jsonify({"error": "No sequence or file provided"}), 400
 
         print(f"Received sequence: {sequence}")  # Debugging
 
@@ -86,4 +102,5 @@ def megablast():
     except Exception as e:
         print(f"Error: {e}")  # Debugging
         return jsonify({"error": str(e)}), 500
+
 
