@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import './styling/DataTable.css'; // Make sure this path is correct
+import GearButton from "./BLTGearBTN copy";
+import './styling/DataTable.css'; // Ensure this path is correct
 
 const DataTable = ({ data, onSelect }) => {
   const [selectedRows, setSelectedRows] = useState([]);
 
+  // Update to store only IDs in selectedRows
   const handleCheckboxChange = (hit) => {
-    const isSelected = selectedRows.includes(hit);
+    const isSelected = selectedRows.includes(hit.id);
     const updatedSelection = isSelected
-      ? selectedRows.filter((row) => row !== hit)
-      : [...selectedRows, hit];
+      ? selectedRows.filter((rowId) => rowId !== hit.id)
+      : [...selectedRows, hit.id];
 
     setSelectedRows(updatedSelection);
 
@@ -17,12 +19,37 @@ const DataTable = ({ data, onSelect }) => {
     }
   };
 
+  // Check if there's any data to display
   if (!data || data.length === 0) {
     return <p className="datatable-no-results">No results to display.</p>;
   }
 
+  // Download selected rows as FASTA
+  const downloadSelectedRows = () => {
+    if (selectedRows.length === 0) {
+      alert("No rows selected to download!");
+      return;
+    }
+
+    const selectedData = data.filter((item) => selectedRows.includes(item.id));
+    const fastaContent = selectedData
+      .map((item) => `>${item.id} ${item.description}\n${item.sequence}`)
+      .join("\n\n");
+
+    const blob = new Blob([fastaContent], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "selected_sequences.fasta";
+    link.click();
+  };
+
   return (
     <div className="datatable-container">
+      {/* Pass updated selected data and download logic */}
+      <GearButton
+        onDownload={downloadSelectedRows}
+        selectedData={data.filter((item) => selectedRows.includes(item.id))} // Ensure selectedData is correctly filtered
+      />
       <table className="datatable">
         <thead>
           <tr>
@@ -40,11 +67,11 @@ const DataTable = ({ data, onSelect }) => {
         </thead>
         <tbody>
           {data.map((hit, index) => (
-            <tr key={index} className={selectedRows.includes(hit) ? 'selected' : ''}>
+            <tr key={index} className={selectedRows.includes(hit.id) ? 'selected' : ''}>
               <td>
                 <input
                   type="checkbox"
-                  checked={selectedRows.includes(hit)}
+                  checked={selectedRows.includes(hit.id)}
                   onChange={() => handleCheckboxChange(hit)}
                 />
               </td>
