@@ -11,6 +11,7 @@ BackEnd/cache/
 # production
 /build
 
+BackEnd/query_cache.json
 # misc
 .DS_Store
 .env.local
