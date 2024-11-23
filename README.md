@@ -1,5 +1,5 @@
 # Abstract:
-
+This web application integrates powerful bioinformatics tools to facilitate sequence analysis and phylogenetic studies. It provides a user-friendly interface for performing BLAST searches, GenBank data retrieval, MegaBLAST for high-speed sequence alignment, and phylogenetic tree generation.
 ## Type of Analysis from Genbank search
 1. Sequence Alignment and Conservation
     
