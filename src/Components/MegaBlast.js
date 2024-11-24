@@ -92,20 +92,24 @@ const MegaBLAST = () => {
             <thead>
               <tr>
                 <th>Title</th>
+                <th>Accession</th>
                 <th>Length</th>
                 <th>Score</th>
                 <th>E-Value</th>
                 <th>Identity</th>
+                <th>Hit Sequence</th>
               </tr>
             </thead>
             <tbody>
               {results.map((result, index) => (
                 <tr key={index}>
                   <td>{result.title}</td>
+                  <td>{result.accession}</td>
                   <td>{result.length}</td>
                   <td>{result.score}</td>
                   <td>{result.e_value}</td>
                   <td>{result.identity}</td>
+                  <td>{result.hit_sequence}</td>
                 </tr>
               ))}
             </tbody>
@@ -117,4 +121,5 @@ const MegaBLAST = () => {
 };
 
 export default MegaBLAST;
+
 
