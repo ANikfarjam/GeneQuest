@@ -14,8 +14,8 @@ from routers.gb_dat_anl_rout import data_anl_bp
 app = Flask(__name__)
 # allow universal requests
 CORS(app, resources={
-    r"/api/*": {"origins": "http://localhost:3000"},
-    r"/alignment_conservation/*": {"origins": "http://localhost:3000"}
+    #r"/api/*": {"origins": "http://localhost:3000"},
+    r"/*": {"origins": "http://localhost:3000"}
 })
 
 #register genbank search
