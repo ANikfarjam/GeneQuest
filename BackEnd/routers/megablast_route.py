@@ -88,12 +88,18 @@ def megablast():
         for record in blast_records:
             for alignment in record.alignments:
                 for hsp in alignment.hsps:
+                    # Extract accession number and first few nucleotides
+                    accession = alignment.accession if hasattr(alignment, 'accession') else "N/A"
+                    hit_sequence = hsp.sbjct[:15] + "....." 
+                    
                     blast_results.append({
                         "title": alignment.title,
+                        "accession": accession,  # Add accession number
                         "length": alignment.length,
                         "score": hsp.score,
                         "e_value": hsp.expect,
                         "identity": hsp.identities,
+                        "hit_sequence": hit_sequence,  # Add first few nucleotides as hit sequence
                         "query": hsp.query,
                         "match": hsp.match,
                         "subject": hsp.sbjct,
@@ -110,5 +116,6 @@ def megablast():
     except Exception as e:
         print(f"Error: {e}")  # Debugging
         return jsonify({"error": str(e)}), 500
+
 
 
