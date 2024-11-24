@@ -90,7 +90,7 @@ def megablast():
                 for hsp in alignment.hsps:
                     # Extract accession number and first few nucleotides
                     accession = alignment.accession if hasattr(alignment, 'accession') else "N/A"
-                    hit_sequence = hsp.sbjct[:15] + "....." 
+                    hit_sequence = hsp.sbjct[:10] + "....." 
                     
                     blast_results.append({
                         "title": alignment.title,
