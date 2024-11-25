@@ -64,14 +64,11 @@ def megablast():
         if not sequence:
             return jsonify({"error": "No sequence or file provided"}), 400
 
-        print(f"Received sequence: {sequence}")  # Debugging
-
         # Generate a unique cache key for the sequence
         sequence_key = hashlib.md5(sequence.encode()).hexdigest()
 
         # Check if the result is already in the cache
         if sequence_key in cache:
-            print("Returning cached MegaBLAST results")
             return jsonify({"megablast_results": cache[sequence_key]}), 200
 
         # Perform MegaBLAST
@@ -88,34 +85,30 @@ def megablast():
         for record in blast_records:
             for alignment in record.alignments:
                 for hsp in alignment.hsps:
-                    # Extract accession number and first few nucleotides
                     accession = alignment.accession if hasattr(alignment, 'accession') else "N/A"
-                    hit_sequence = hsp.sbjct[:15] + "....." 
-                    
                     blast_results.append({
                         "title": alignment.title,
-                        "accession": accession,  # Add accession number
+                        "accession": accession,
                         "length": alignment.length,
                         "score": hsp.score,
                         "e_value": hsp.expect,
                         "identity": hsp.identities,
-                        "hit_sequence": hit_sequence,  # Add first few nucleotides as hit sequence
-                        "query": hsp.query,
-                        "match": hsp.match,
-                        "subject": hsp.sbjct,
+                        "hit_sequence": hsp.sbjct[:10] + ".....",
+                        "query": hsp.query,     # Add the query sequence
+                        "match": hsp.match,     # Add the match line
+                        "subject": hsp.sbjct,   # Add the subject sequence
                     })
-
+                    
+        print("BLAST Results:", blast_results)
         # Cache the MegaBLAST results
         cache[sequence_key] = blast_results
         save_cache(cache)
 
-        print(f"BLAST Results: {blast_results}")  # Debugging
-
         return jsonify({"megablast_results": blast_results}), 200
 
     except Exception as e:
-        print(f"Error: {e}")  # Debugging
         return jsonify({"error": str(e)}), 500
+
 
 
 

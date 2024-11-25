@@ -39,7 +39,6 @@ const MegaBLAST = () => {
       });
       setResults(response.data.megablast_results);
     } catch (err) {
-      console.error("Error running MegaBLAST:", err);
       setError(err.response?.data?.error || "An unknown error occurred.");
     } finally {
       setLoading(false);
@@ -98,6 +97,7 @@ const MegaBLAST = () => {
                 <th>E-Value</th>
                 <th>Identity</th>
                 <th>Hit Sequence</th>
+                <th>Alignment</th> {/* New column */}
               </tr>
             </thead>
             <tbody>
@@ -110,6 +110,15 @@ const MegaBLAST = () => {
                   <td>{result.e_value}</td>
                   <td>{result.identity}</td>
                   <td>{result.hit_sequence}</td>
+                  <td>
+                    <div style={{ fontFamily: "monospace", whiteSpace: "pre-wrap", lineHeight: "0.75" }}>
+                      {result.query}
+                      {"\n"} {/* Add a line break */}
+                      {result.match}
+                      {"\n"} {/* Add a line break */}
+                      {result.subject}
+                    </div>
+                  </td> {/* Combine Alignment */}
                 </tr>
               ))}
             </tbody>
@@ -121,5 +130,3 @@ const MegaBLAST = () => {
 };
 
 export default MegaBLAST;
-
-
