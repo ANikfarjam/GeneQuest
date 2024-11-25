@@ -79,7 +79,7 @@ def phylogenetic_tree():
         # Perform sequence alignment using MAFFT
         aligned_file = tempfile.NamedTemporaryFile(delete=False, suffix='.fasta').name
         command = [
-            "mafft.bat",  # MAFFT batch file for Windows
+            "../mafft-mac/mafft.bat",  # MAFFT batch file for Windows
             "--auto",  # Use automatic alignment settings
             input_file  # Input file
         ]
