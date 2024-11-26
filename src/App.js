@@ -7,6 +7,7 @@ import PhylogeneticTree from './Components/PhylogeneticTree';
 import MegaBLAST from './Components/MegaBlast';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import logo from './Components/media/logo.jpg';
+import TwoCardsComponent from './Components/TwoCardsComponent'
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
           <Route path="/Blast" element={<GenomeSearch />} />
           <Route path="/PhylogeneticTree" element={<PhylogeneticTree />} />
           <Route path="/MegaBLAST" element={<MegaBLAST />} />
-          <Route path="/about" element={<p>About Us section content here.</p>} />
+          <Route path="/about" element={<TwoCardsComponent/>} />
         </Routes>
       </div>
     </Router>
