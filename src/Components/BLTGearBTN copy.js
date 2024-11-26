@@ -8,6 +8,8 @@ const GearButton = ({ onDownload, selectedData }) => {
   const [alignmentData, setAlignmentData] = useState(null); // Alignment data
   const [showTreeModal, setShowTreeModal] = useState(false); // Tree modal state
   const [treeImgUrl, setTreeImgUrl] = useState(null); // Tree image URL
+  const [conservedRegion, setConservedRegion] = useState(null); // Conserved region data
+  const [showConservedModal, setShowConservedModal] = useState(false); // Conserved region modal state
 
   const open = Boolean(anchorEl);
 
@@ -43,11 +45,9 @@ const GearButton = ({ onDownload, selectedData }) => {
       return;
     }
 
-    // Use the first accession as the "requestedQuery"
     const requestedQuery = data[0]?.accession || "";
 
     try {
-      // Send selected data to the backend
       const response = await fetch("http://127.0.0.1:5000/gb_dat_anl", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -65,14 +65,47 @@ const GearButton = ({ onDownload, selectedData }) => {
         throw new Error(`Error fetching tree image: ${response.statusText}`);
       }
 
-      // Convert response to a blob and create an object URL
       const blob = await response.blob();
       const imgUrl = URL.createObjectURL(blob);
       setTreeImgUrl(imgUrl);
-      setShowTreeModal(true); // Open the tree modal
+      setShowTreeModal(true);
     } catch (error) {
       console.error("Error generating phylogenetic tree:", error);
       alert("Failed to generate the phylogenetic tree.");
+    }
+  };
+
+  // Calculate Conservative Region
+  const handleCalculateConservedRegion = async (data) => {
+    if (!data || data.length === 0) {
+      alert("No data selected for calculation!");
+      return;
+    }
+    const requestedQuery = data[0]?.accession || "";
+    try {
+      const response = await fetch("http://127.0.0.1:5000/conservativeRegion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          requestedQuery,
+          sequences: data.map((item) => ({
+            requestedQuerySequence: item.querySequence,
+            accession: item.accession,
+            hitSequence: item.hitSequence,
+          })),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error fetching conserved region: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      setConservedRegion(result["Conserved region"]);
+      setShowConservedModal(true);
+    } catch (error) {
+      console.error("Error calculating conserved region:", error);
+      alert("Failed to calculate the conserved region.");
     }
   };
 
@@ -84,6 +117,11 @@ const GearButton = ({ onDownload, selectedData }) => {
   const closeTreeModal = () => {
     setShowTreeModal(false);
     setTreeImgUrl(null);
+  };
+
+  const closeConservedModal = () => {
+    setShowConservedModal(false);
+    setConservedRegion(null);
   };
 
   return (
@@ -115,6 +153,9 @@ const GearButton = ({ onDownload, selectedData }) => {
           Generate Phylogenetic Tree
         </MenuItem>
         <MenuItem onClick={onDownload}>Save Selected Data</MenuItem>
+        <MenuItem onClick={() => handleCalculateConservedRegion(selectedData)}>
+          Calculate Conservative Region
+        </MenuItem>
       </Menu>
 
       {/* Alignment Modal */}
@@ -184,6 +225,42 @@ const GearButton = ({ onDownload, selectedData }) => {
               alt="Phylogenetic Tree"
               style={{ maxWidth: "100%", height: "auto" }}
             />
+          ) : (
+            <p>Loading...</p>
+          )}
+        </Box>
+      </Modal>
+
+      {/* Conserved Region Modal */}
+      <Modal open={showConservedModal} onClose={closeConservedModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 800,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+            overflow: "auto",
+            textAlign: "center",
+          }}
+        >
+          <h2>Conserved Region</h2>
+          {conservedRegion ? (
+            <pre
+              style={{
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
+            >
+              {conservedRegion}
+            </pre>
           ) : (
             <p>Loading...</p>
           )}
